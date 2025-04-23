@@ -1,7 +1,15 @@
-node_modules/
 
-.env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
+typechain-types/  
+node_modules/  
+artifacts/ 
+coverage/  
+.vscode/ 
+.idea/  
+cache/ 
+
+
+.DS_Store 
+*.log  
+*.tgz 
+*.swp 
+*.swo
