@@ -1,0 +1,20 @@
+{
+    "name": "restake-risk-oracle",
+    "version": "1.0.0",
+    "description": "Restake Risk Oracle project",
+    "main": "index.js",
+    "scripts": {
+    "build": "tsc",
+    "test": "hardhat test",
+    "deploy": "hardhat run scripts/deploy.ts --network swell",
+    "check-address": "hardhat run checkAddress.ts --network swell"},
+    "dependencies": {
+        "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+        "dotenv": "^16.0.0",
+        "solc": "^0.8.26"
+    },
+    "devDependencies": {
+        "hardhat": "^2.12.0",
+        "typescript": "^5.0.0"
+    }
+}

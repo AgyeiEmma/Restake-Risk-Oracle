@@ -1,0 +1,5 @@
+# Placeholder for subgraph schema
+type AVS @entity {
+  id: ID!
+  riskScore: Int!
+}
