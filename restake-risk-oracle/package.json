@@ -16,10 +16,7 @@
         "solc": "^0.8.26"
     },
     "devDependencies": {
-        "@nomicfoundation/hardhat-toolbox": "^2.0.2",
-        "@typechain/ethers-v5": "^10.1.0",
-        "@typechain/hardhat": "^6.1.2",
-        "ethers": "^6.1.0",
-        "hardhat": "^2.17.0"
+        "hardhat": "^2.12.0",
+        "typescript": "^5.0.0"
     }
 }
