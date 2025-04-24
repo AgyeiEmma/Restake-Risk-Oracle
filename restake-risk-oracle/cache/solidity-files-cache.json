@@ -110,8 +110,8 @@
       ]
     },
     "/Users/quagrain/development/projects/Restake-Risk-Oracle/restake-risk-oracle/contracts/RRO.sol": {
-      "lastModificationDate": 1745468883536,
-      "contentHash": "17e49cb7e83326acfe469b3972b7fe8f",
+      "lastModificationDate": 1745496818113,
+      "contentHash": "f95f8bc69e5b22fc125563b2ff814392",
       "sourceName": "contracts/RRO.sol",
       "solcConfig": {
         "version": "0.8.26",
