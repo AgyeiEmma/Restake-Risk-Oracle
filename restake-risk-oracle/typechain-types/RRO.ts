@@ -32,14 +32,20 @@ export interface RROInterface extends utils.Interface {
     "avsList(uint256)": FunctionFragment;
     "avsRegistry(string)": FunctionFragment;
     "depositToAVS(string,uint256)": FunctionFragment;
+    "getAVSDetails(string)": FunctionFragment;
     "getAllAVSs()": FunctionFragment;
     "getRiskScore(string)": FunctionFragment;
     "getUserBalance(address,string)": FunctionFragment;
+    "getUserPreferences(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "rebalance()": FunctionFragment;
     "registerAVS(string,uint8)": FunctionFragment;
+    "setTrustedBackend(address)": FunctionFragment;
     "setUserPreferences(uint8)": FunctionFragment;
+    "triggerRebalance(address)": FunctionFragment;
+    "trustedBackend()": FunctionFragment;
     "updateRiskScore(string,uint8)": FunctionFragment;
+    "updateRiskScoreFromOracle(string,uint8)": FunctionFragment;
     "userBalances(address,string)": FunctionFragment;
     "userPreferences(address)": FunctionFragment;
   };
@@ -49,14 +55,20 @@ export interface RROInterface extends utils.Interface {
       | "avsList"
       | "avsRegistry"
       | "depositToAVS"
+      | "getAVSDetails"
       | "getAllAVSs"
       | "getRiskScore"
       | "getUserBalance"
+      | "getUserPreferences"
       | "owner"
       | "rebalance"
       | "registerAVS"
+      | "setTrustedBackend"
       | "setUserPreferences"
+      | "triggerRebalance"
+      | "trustedBackend"
       | "updateRiskScore"
+      | "updateRiskScoreFromOracle"
       | "userBalances"
       | "userPreferences"
   ): FunctionFragment;
@@ -74,6 +86,10 @@ export interface RROInterface extends utils.Interface {
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
+    functionFragment: "getAVSDetails",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getAllAVSs",
     values?: undefined
   ): string;
@@ -85,6 +101,10 @@ export interface RROInterface extends utils.Interface {
     functionFragment: "getUserBalance",
     values: [PromiseOrValue<string>, PromiseOrValue<string>]
   ): string;
+  encodeFunctionData(
+    functionFragment: "getUserPreferences",
+    values: [PromiseOrValue<string>]
+  ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(functionFragment: "rebalance", values?: undefined): string;
   encodeFunctionData(
@@ -92,11 +112,27 @@ export interface RROInterface extends utils.Interface {
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
+    functionFragment: "setTrustedBackend",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setUserPreferences",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
+    functionFragment: "triggerRebalance",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "trustedBackend",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "updateRiskScore",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateRiskScoreFromOracle",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
@@ -117,6 +153,10 @@ export interface RROInterface extends utils.Interface {
     functionFragment: "depositToAVS",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getAVSDetails",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getAllAVSs", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getRiskScore",
@@ -126,6 +166,10 @@ export interface RROInterface extends utils.Interface {
     functionFragment: "getUserBalance",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getUserPreferences",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "rebalance", data: BytesLike): Result;
   decodeFunctionResult(
@@ -133,11 +177,27 @@ export interface RROInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "setTrustedBackend",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "setUserPreferences",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "triggerRebalance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "trustedBackend",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "updateRiskScore",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateRiskScoreFromOracle",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -151,12 +211,14 @@ export interface RROInterface extends utils.Interface {
 
   events: {
     "AVSRegistered(string,uint8)": EventFragment;
+    "RebalanceTriggered(address)": EventFragment;
     "Rebalanced(address,string,string,uint256)": EventFragment;
     "RiskScoreUpdated(string,uint8)": EventFragment;
     "UserPrefsUpdated(address,uint8)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "AVSRegistered"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RebalanceTriggered"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Rebalanced"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RiskScoreUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "UserPrefsUpdated"): EventFragment;
@@ -172,6 +234,17 @@ export type AVSRegisteredEvent = TypedEvent<
 >;
 
 export type AVSRegisteredEventFilter = TypedEventFilter<AVSRegisteredEvent>;
+
+export interface RebalanceTriggeredEventObject {
+  user: string;
+}
+export type RebalanceTriggeredEvent = TypedEvent<
+  [string],
+  RebalanceTriggeredEventObject
+>;
+
+export type RebalanceTriggeredEventFilter =
+  TypedEventFilter<RebalanceTriggeredEvent>;
 
 export interface RebalancedEventObject {
   user: string;
@@ -259,6 +332,17 @@ export interface RRO extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    getAVSDetails(
+      name: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, number, boolean] & {
+        avsName: string;
+        baseRiskScore: number;
+        exists: boolean;
+      }
+    >;
+
     getAllAVSs(overrides?: CallOverrides): Promise<[string[]]>;
 
     getRiskScore(
@@ -272,6 +356,13 @@ export interface RRO extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    getUserPreferences(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<
+      [number, boolean] & { maxRiskScore: number; autoRebalance: boolean }
+    >;
+
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     rebalance(
@@ -284,12 +375,30 @@ export interface RRO extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    setTrustedBackend(
+      backend: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     setUserPreferences(
       maxRiskScore: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    triggerRebalance(
+      user: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    trustedBackend(overrides?: CallOverrides): Promise<[string]>;
+
     updateRiskScore(
+      name: PromiseOrValue<string>,
+      newRiskScore: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    updateRiskScoreFromOracle(
       name: PromiseOrValue<string>,
       newRiskScore: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -331,6 +440,17 @@ export interface RRO extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  getAVSDetails(
+    name: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<
+    [string, number, boolean] & {
+      avsName: string;
+      baseRiskScore: number;
+      exists: boolean;
+    }
+  >;
+
   getAllAVSs(overrides?: CallOverrides): Promise<string[]>;
 
   getRiskScore(
@@ -344,6 +464,13 @@ export interface RRO extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  getUserPreferences(
+    user: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<
+    [number, boolean] & { maxRiskScore: number; autoRebalance: boolean }
+  >;
+
   owner(overrides?: CallOverrides): Promise<string>;
 
   rebalance(
@@ -356,12 +483,30 @@ export interface RRO extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  setTrustedBackend(
+    backend: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   setUserPreferences(
     maxRiskScore: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  triggerRebalance(
+    user: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  trustedBackend(overrides?: CallOverrides): Promise<string>;
+
   updateRiskScore(
+    name: PromiseOrValue<string>,
+    newRiskScore: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  updateRiskScoreFromOracle(
     name: PromiseOrValue<string>,
     newRiskScore: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -403,6 +548,17 @@ export interface RRO extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    getAVSDetails(
+      name: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, number, boolean] & {
+        avsName: string;
+        baseRiskScore: number;
+        exists: boolean;
+      }
+    >;
+
     getAllAVSs(overrides?: CallOverrides): Promise<string[]>;
 
     getRiskScore(
@@ -416,6 +572,13 @@ export interface RRO extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getUserPreferences(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<
+      [number, boolean] & { maxRiskScore: number; autoRebalance: boolean }
+    >;
+
     owner(overrides?: CallOverrides): Promise<string>;
 
     rebalance(overrides?: CallOverrides): Promise<void>;
@@ -426,12 +589,30 @@ export interface RRO extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setTrustedBackend(
+      backend: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setUserPreferences(
       maxRiskScore: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    triggerRebalance(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    trustedBackend(overrides?: CallOverrides): Promise<string>;
+
     updateRiskScore(
+      name: PromiseOrValue<string>,
+      newRiskScore: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    updateRiskScoreFromOracle(
       name: PromiseOrValue<string>,
       newRiskScore: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -457,6 +638,9 @@ export interface RRO extends BaseContract {
       baseRiskScore?: null
     ): AVSRegisteredEventFilter;
     AVSRegistered(name?: null, baseRiskScore?: null): AVSRegisteredEventFilter;
+
+    "RebalanceTriggered(address)"(user?: null): RebalanceTriggeredEventFilter;
+    RebalanceTriggered(user?: null): RebalanceTriggeredEventFilter;
 
     "Rebalanced(address,string,string,uint256)"(
       user?: null,
@@ -507,6 +691,11 @@ export interface RRO extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    getAVSDetails(
+      name: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getAllAVSs(overrides?: CallOverrides): Promise<BigNumber>;
 
     getRiskScore(
@@ -517,6 +706,11 @@ export interface RRO extends BaseContract {
     getUserBalance(
       user: PromiseOrValue<string>,
       name: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getUserPreferences(
+      user: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -532,12 +726,30 @@ export interface RRO extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    setTrustedBackend(
+      backend: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     setUserPreferences(
       maxRiskScore: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    triggerRebalance(
+      user: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    trustedBackend(overrides?: CallOverrides): Promise<BigNumber>;
+
     updateRiskScore(
+      name: PromiseOrValue<string>,
+      newRiskScore: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    updateRiskScoreFromOracle(
       name: PromiseOrValue<string>,
       newRiskScore: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -572,6 +784,11 @@ export interface RRO extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    getAVSDetails(
+      name: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getAllAVSs(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getRiskScore(
@@ -582,6 +799,11 @@ export interface RRO extends BaseContract {
     getUserBalance(
       user: PromiseOrValue<string>,
       name: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getUserPreferences(
+      user: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -597,12 +819,30 @@ export interface RRO extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    setTrustedBackend(
+      backend: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     setUserPreferences(
       maxRiskScore: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    triggerRebalance(
+      user: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    trustedBackend(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     updateRiskScore(
+      name: PromiseOrValue<string>,
+      newRiskScore: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateRiskScoreFromOracle(
       name: PromiseOrValue<string>,
       newRiskScore: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
