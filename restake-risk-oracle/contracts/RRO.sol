@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
+import "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 
 contract RRO {
     struct AVS {
@@ -71,14 +72,6 @@ contract RRO {
     function updateRiskScore(string memory name, uint8 newRiskScore) external onlyOwner {
         require(avsRegistry[name].exists, "AVS not found");
         require(newRiskScore <= 100, "Invalid score");
-
-        avsRegistry[name].baseRiskScore = newRiskScore;
-        emit RiskScoreUpdated(name, newRiskScore);
-    }
-
-    function updateRiskScoreFromOracle(string memory name, uint8 newRiskScore) external onlyOwner {
-        require(avsRegistry[name].exists, "AVS not found");
-        require(newRiskScore <= 100, "Invalid risk score");
 
         avsRegistry[name].baseRiskScore = newRiskScore;
         emit RiskScoreUpdated(name, newRiskScore);
@@ -158,5 +151,39 @@ contract RRO {
 
     function getAllAVSs() external view returns (string[] memory) {
         return avsList;
+    }
+
+    // Chainlink variables
+    AggregatorV3Interface public riskScoreOracle;
+
+    // Function to set the Chainlink oracle address
+    function setRiskScoreOracle(address oracle) external onlyOwner {
+        riskScoreOracle = AggregatorV3Interface(oracle);
+    }
+
+    // Function to fetch the latest risk score from the oracle
+    function fetchRiskScoreFromOracle(string memory avsName) public view returns (uint8) {
+        require(avsRegistry[avsName].exists, "AVS not found");
+
+        // Fetch the latest data from the oracle
+        (, int256 riskScore, , , ) = riskScoreOracle.latestRoundData();
+
+        // Ensure the risk score is within the valid range for uint8
+        require(riskScore >= 0 && riskScore <= 255, "Invalid risk score from oracle");
+
+        // Convert int256 to uint256, then to uint8
+        return uint8(uint256(riskScore));
+    }
+
+    // Update the `updateRiskScoreFromOracle` function
+    function updateRiskScoreFromOracle(string memory avsName) external onlyTrustedBackend {
+        require(avsRegistry[avsName].exists, "AVS not found");
+
+        // Fetch the latest risk score from the oracle
+        uint8 newRiskScore = fetchRiskScoreFromOracle(avsName);
+
+        // Update the AVS risk score
+        avsRegistry[avsName].baseRiskScore = newRiskScore;
+        emit RiskScoreUpdated(avsName, newRiskScore);
     }
 }

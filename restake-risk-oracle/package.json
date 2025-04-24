@@ -4,17 +4,22 @@
     "description": "Restake Risk Oracle project",
     "main": "index.js",
     "scripts": {
-    "build": "tsc",
-    "test": "hardhat test",
-    "deploy": "hardhat run scripts/deploy.ts --network swell",
-    "check-address": "hardhat run checkAddress.ts --network swell"},
+        "build": "tsc",
+        "test": "hardhat test",
+        "deploy": "hardhat run scripts/deploy.ts --network swell",
+        "check-address": "hardhat run checkAddress.ts --network swell"
+    },
     "dependencies": {
+        "@chainlink/contracts": "^1.3.0",
         "@nomicfoundation/hardhat-toolbox": "^2.0.0",
         "dotenv": "^16.0.0",
         "solc": "^0.8.26"
     },
     "devDependencies": {
-        "hardhat": "^2.12.0",
-        "typescript": "^5.0.0"
+        "@nomicfoundation/hardhat-toolbox": "^2.0.2",
+        "@typechain/ethers-v5": "^10.1.0",
+        "@typechain/hardhat": "^6.1.2",
+        "ethers": "^6.1.0",
+        "hardhat": "^2.17.0"
     }
 }

@@ -73,10 +73,10 @@
         "MockAVS"
       ]
     },
-    "/Users/quagrain/development/projects/Restake-Risk-Oracle/restake-risk-oracle/contracts/RRO.sol": {
-      "lastModificationDate": 1745465861440,
-      "contentHash": "3da28f99a1073a91f07223d6b67157ef",
-      "sourceName": "contracts/RRO.sol",
+    "/Users/quagrain/development/projects/Restake-Risk-Oracle/restake-risk-oracle/contracts/MockOracle.sol": {
+      "lastModificationDate": 1745467990207,
+      "contentHash": "3b68e5f3d406992eba57bcd12d7c248f",
+      "sourceName": "contracts/MockOracle.sol",
       "solcConfig": {
         "version": "0.8.26",
         "settings": {
@@ -106,7 +106,81 @@
         "^0.8.26"
       ],
       "artifacts": [
+        "MockOracle"
+      ]
+    },
+    "/Users/quagrain/development/projects/Restake-Risk-Oracle/restake-risk-oracle/contracts/RRO.sol": {
+      "lastModificationDate": 1745468883536,
+      "contentHash": "17e49cb7e83326acfe469b3972b7fe8f",
+      "sourceName": "contracts/RRO.sol",
+      "solcConfig": {
+        "version": "0.8.26",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.26"
+      ],
+      "artifacts": [
         "RRO"
+      ]
+    },
+    "/Users/quagrain/development/projects/Restake-Risk-Oracle/restake-risk-oracle/node_modules/@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol": {
+      "lastModificationDate": 1745468583689,
+      "contentHash": "64a3f906dc7696aa3c9fa8454b673be7",
+      "sourceName": "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol",
+      "solcConfig": {
+        "version": "0.8.26",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "AggregatorV3Interface"
       ]
     }
   }
