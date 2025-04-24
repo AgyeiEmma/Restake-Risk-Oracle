@@ -12,6 +12,7 @@ contract RRO {
     struct UserPrefs {
         uint8 maxRiskScore; 
         bool autoRebalance; 
+        bool exists;
     }
  
     address public owner;
@@ -78,10 +79,9 @@ contract RRO {
     }
 
     function setUserPreferences(uint8 maxRiskScore) external {
-        require(maxRiskScore <= 100, "Invalid threshold");
         require(maxRiskScore > 0, "Risk score must be greater than 0");
-
-        userPreferences[msg.sender] = UserPrefs(maxRiskScore, true);
+        require(maxRiskScore <= 100, "Invalid threshold");
+        userPreferences[msg.sender] = UserPrefs(maxRiskScore, true, true); // Set exists to true
         emit UserPrefsUpdated(msg.sender, maxRiskScore);
     }
 
@@ -121,29 +121,30 @@ contract RRO {
     }
 
     function triggerRebalance(address user) external onlyTrustedBackend {
-    UserPrefs memory prefs = userPreferences[user];
-    require(prefs.autoRebalance, "User has not opted into auto-rebalancing");
+        // Retrieve the user's preferences
+        UserPrefs memory prefs = userPreferences[user];
+        require(prefs.exists, "User has not opted into auto-rebalancing");
 
-    for (uint i = 0; i < avsList.length; i++) {
-        string memory avsName = avsList[i];
-        uint8 score = avsRegistry[avsName].baseRiskScore;
+        for (uint i = 0; i < avsList.length; i++) {
+            string memory avsName = avsList[i];
+            uint8 score = avsRegistry[avsName].baseRiskScore;
 
-        if (userBalances[user][avsName] > 0 && score > prefs.maxRiskScore) {
-            for (uint j = 0; j < avsList.length; j++) {
-                string memory saferAVS = avsList[j];
-                if (avsRegistry[saferAVS].baseRiskScore <= prefs.maxRiskScore) {
-                    uint256 amount = userBalances[user][avsName];
-                    userBalances[user][avsName] = 0;
-                    userBalances[user][saferAVS] += amount;
-                    emit Rebalanced(user, avsName, saferAVS, amount);
-                    break;
+            if (userBalances[user][avsName] > 0 && score > prefs.maxRiskScore) {
+                for (uint j = 0; j < avsList.length; j++) {
+                    string memory saferAVS = avsList[j];
+                    if (avsRegistry[saferAVS].baseRiskScore <= prefs.maxRiskScore) {
+                        uint256 amount = userBalances[user][avsName];
+                        userBalances[user][avsName] = 0;
+                        userBalances[user][saferAVS] += amount;
+                        emit Rebalanced(user, avsName, saferAVS, amount);
+                        break;
+                    }
                 }
             }
         }
-    }
 
-    emit RebalanceTriggered(user);
-}
+        emit RebalanceTriggered(user);
+    }
 
     function getUserBalance(address user, string memory name) external view returns (uint256) {
         return userBalances[user][name];

@@ -59,7 +59,7 @@ describe("RRO Contract", () => {
     });
 
     it("should validate user preferences inputs", async () => {
-      await expect(contract.connect(user).setUserPreferences(0)).to.be.revertedWith("Risk score must be greater than 0");
+      await expect(contract.setUserPreferences(0)).to.be.revertedWith("Risk score must be greater than 0");
       await expect(contract.connect(user).setUserPreferences(101)).to.be.revertedWith("Invalid threshold");
     });
   });
@@ -97,7 +97,7 @@ describe("RRO Contract", () => {
       await contract.connect(user).setUserPreferences(50); // Default autoRebalance is true
       await contract.connect(user).setUserPreferences(50); // Reset preferences without changing autoRebalance
 
-      // Attempt to trigger rebalancing
+      // Attempt to trigger rebalancing using the trusted backend
       await expect(contract.connect(trustedBackend).triggerRebalance(user.address)).to.be.revertedWith(
         "User has not opted into auto-rebalancing"
       );
